@@ -1,0 +1,22 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace EventService.Models;
+
+public class Package
+{
+    public int Id { get; set; }
+
+    [Required]
+    public string Name { get; set; } = null!;
+
+    [Required]
+    public decimal Price { get; set; }
+
+    [Required]
+    public ICollection<Perk> Perks { get; set; } = new List<Perk>();
+
+    [Required]
+    public int EventId { get; set; }
+
+    public Event Event { get; set; } = null!;
+}
