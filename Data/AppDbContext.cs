@@ -17,14 +17,22 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Event>()
             .HasMany(e => e.Packages)
-            .WithOne()
+            .WithOne(p => p.Event)
             .HasForeignKey(p => p.EventId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Package>()
             .HasMany(p => p.Perks)
-            .WithOne()
+            .WithOne(perk => perk.Package)
             .HasForeignKey(perk => perk.PackageId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Event>()
+            .Property(e => e.Price)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Package>()
+            .Property(p => p.Price)
+            .HasColumnType("decimal(18,2)");
     }
 }

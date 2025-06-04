@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventService.Models;
 
@@ -28,13 +30,17 @@ public class Event
     public int TicketsLeft { get; set; }
 
     [Required]
+    [Precision(10, 2)]
     public decimal Price { get; set; }
 
     [Required]
     public string Category { get; set; } = null!;
 
     [Required]
-    public string Image { get; set; } = null!;
+    public string ThumbnailImage { get; set; } = null!;
+
+    [Required]
+    public string BannerImage { get; set; } = null!;
 
     [Required]
     public ICollection<Package> Packages { get; set; } = new List<Package>();

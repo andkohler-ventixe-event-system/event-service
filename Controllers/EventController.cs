@@ -33,15 +33,15 @@ public class EventController : ControllerBase
             .ThenInclude(p => p.Perks)
             .FirstOrDefaultAsync(e => e.Id == id);
 
-        if (ev == null)
-            return NotFound();
-
-        return ev;
+        return ev == null ? NotFound() : ev;
     }
 
     [HttpPost]
     public async Task<ActionResult<Event>> CreateEvent(Event newEvent)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         _context.Events.Add(newEvent);
         await _context.SaveChangesAsync();
 
@@ -53,6 +53,9 @@ public class EventController : ControllerBase
     {
         if (id != updatedEvent.Id)
             return BadRequest();
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
         _context.Entry(updatedEvent).State = EntityState.Modified;
 
@@ -79,6 +82,25 @@ public class EventController : ControllerBase
             return NotFound();
 
         _context.Events.Remove(ev);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    [HttpPatch("{id}/decrease-tickets")]
+    public async Task<IActionResult> DecreaseTickets(int id, [FromBody] TicketUpdateRequest request)
+    {
+        var evnt = await _context.Events.FindAsync(id);
+        if (evnt == null)
+            return NotFound();
+
+        if (request.Quantity <= 0)
+            return BadRequest("Quantity must be greater than 0.");
+
+        if (evnt.TicketsLeft < request.Quantity)
+            return BadRequest("Not enough tickets left.");
+
+        evnt.TicketsLeft -= request.Quantity;
         await _context.SaveChangesAsync();
 
         return NoContent();
