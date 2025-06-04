@@ -3,14 +3,6 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(options => {
-    options.AddPolicy("AllowFrontend", policy =>
-    {
-        policy.WithOrigins("https://your-frontend-url.net") // Replace this with your actual frontend URL
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -22,7 +14,6 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-app.UseCors("AllowFrontend");
 
 app.UseAuthorization();
 
